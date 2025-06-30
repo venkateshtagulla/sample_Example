@@ -1,1 +1,26 @@
-apple123
+SQS Lamda code
+-------------------
+
+console.log('Lambda function initialized');
+
+export const handler = async (event, context) => {
+  console.log("Received SQS event:", JSON.stringify(event, null, 2));
+
+  for (const record of event.Records) {
+    const messageBody = record.body;
+    console.log("📩 Raw message body:", messageBody);
+
+    try {
+      const data = JSON.parse(messageBody);
+      console.log("✅ Parsed Message:");
+      console.log("key1:", data.key1);
+      console.log("key2:", data.key2);
+      console.log("key3:", data.key3);
+    } catch (err) {
+      console.error("❌ Error parsing message body:", err);
+    }
+  }
+
+  return "✅ SQS message(s) processed successfully";
+};
+
