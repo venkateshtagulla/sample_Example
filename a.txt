@@ -36,3 +36,22 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': 'File metadata saved to DynamoDB'
     }
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+SNS ACCesspolicy
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowS3ToPublish",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "SNS:Publish",
+      "Resource": "*"
+    }
+  ]
+}
