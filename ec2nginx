@@ -1,0 +1,70 @@
+✅ Step-by-Step: Run Custom Nginx Page with Docker on EC2 (Ubuntu)
+
+Update the system
+Run: sudo apt-get update -y
+
+Install Docker
+Run: sudo apt install docker.io -y
+
+Pull the official Nginx image
+Run: sudo docker pull nginx
+
+Run Nginx container on port 80
+Run: sudo docker run -d -p 80:80 --name my-nginx nginx
+
+Access the container shell
+Run: sudo docker exec -it my-nginx bash
+
+Navigate to the HTML folder
+Run: cd /usr/share/nginx/html/
+
+Install nano inside the container
+Run: apt update and then apt install nano -y
+
+Edit the homepage
+Run: nano index.html
+Inside the file, replace or edit the content with:
+<h1>My Roll Number: 123456</h1>
+To save and exit:
+
+Press Ctrl + O and Enter to save
+
+Press Ctrl + X to exit nano
+
+Exit the container
+Run: exit
+
+Access the page in browser
+Open your browser and go to: http://<your-ec2-public-ip>
+
+You will see your custom Nginx page showing your roll number.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Configure Security Group
+Allow the following inbound rules:
+
+Type: SSH | Protocol: TCP | Port: 22 | Source: 0.0.0.0/0 | Description: For terminal (SSH) access
+
+Type: HTTP | Protocol: TCP | Port: 80 | Source: 0.0.0.0/0 | Description: For browser access
+
+Type: HTTPS | Protocol: TCP | Port: 443 | Source: 0.0.0.0/0 | Description: For secure web access (optional)
+
+Connect to your EC2 instance using SSH
+Example: ssh -i "your-key.pem" ec2-user@<public-ip>
+
+Install Apache Web Server (httpd)
+Run the following commands on the instance:
+
+sudo yum update -y
+
+sudo yum install httpd -y
+
+sudo systemctl start httpd
+
+sudo systemctl enable httpd
+
+(Optional) Add your own content
+Replace the default page at /var/www/html/index.html with your own content using a text editor like nano.
+
+Access the site
+Open your browser and go to: http://<your-ec2-public-ip>
