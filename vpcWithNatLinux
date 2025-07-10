@@ -1,0 +1,119 @@
+
+🛠️ AWS VPC with NAT Gateway, Bastion Host, Private MySQL DB Setup (Amazon Linux 2023)
+
+✅ 1. Create Custom VPC
+- VPC CIDR: 10.0.0.0/16
+- Name: my-vpc1
+
+✅ 2. Create Subnets
+
+A. Public Subnet
+- CIDR: 10.0.1.0/24
+- AZ: ap-south-1a
+- Name: PublicSubnet
+- Enable Auto-Assign Public IP
+
+B. Private Subnet
+- CIDR: 10.0.2.0/24
+- AZ: ap-south-1a
+- Name: PrivateSubnet
+- Disable Auto-Assign Public IP
+
+✅ 3. Create Internet Gateway
+- Attach it to my-vpc1
+
+✅ 4. Create Route Tables
+
+A. Public Route Table
+- Associate with PublicSubnet
+- Route:
+  Destination: 0.0.0.0/0
+  Target: Internet Gateway (igw-xxxxxx)
+
+B. Private Route Table
+- Associate with PrivateSubnet
+- Route:
+  Destination: 0.0.0.0/0
+  Target: NAT Gateway (nat-xxxxxx)
+
+✅ 5. Launch EC2 Instances
+
+A. Bastion Host (Public Subnet)
+- AMI: Amazon Linux 2 or 2023
+- Type: t2.micro
+- Subnet: PublicSubnet
+- Auto-assign Public IP: Yes
+- Key pair: .ppk or .pem
+- Security Group:
+  Inbound:
+    SSH (22) from 0.0.0.0/0
+
+B. DB Server (Private Subnet)
+- AMI: Amazon Linux 2023
+- Type: t2.micro
+- Subnet: PrivateSubnet
+- Auto-assign Public IP: No
+- Key pair: .pem
+- Security Group:
+  Inbound:
+    SSH (22) from Bastion Host SG
+    MySQL (3306) from WebServer SG (optional)
+
+✅ 6. Create NAT Gateway
+- Subnet: PublicSubnet
+- Elastic IP: Allocate and attach
+- Private Route Table Route:
+  Destination: 0.0.0.0/0
+  Target: NAT Gateway
+
+✅ 7. SSH Connection Process
+
+Step 1: Connect to Bastion using PuTTY (.ppk)
+- Hostname: <Bastion Public IP>
+- Port: 22
+
+Step 2: From Bastion, connect to DB Server
+ssh -i dbserver-key.pem ec2-user@<DB-Private-IP>
+
+✅ 8. Verify Internet Access in DB Server
+curl https://google.com
+
+✅ 9. Install MySQL 8.0 on Amazon Linux 2023 (DB Server)
+
+# Switch to root
+sudo su
+
+# Install MySQL Yum repo
+dnf install -y https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm
+
+# Install MySQL Server
+dnf install -y mysql-community-server
+
+# Start and enable MySQL
+systemctl start mysqld
+systemctl enable mysqld
+
+# Check MySQL status
+systemctl status mysqld
+
+# Secure MySQL
+mysql_secure_installation
+
+# Log into MySQL
+mysql -u root -p
+
+🧾 Summary of Architecture
+
+Component        | Description
+-----------------|-----------------------------------------------------
+VPC              | Custom VPC with CIDR 10.0.0.0/16
+Subnets          | Public (10.0.1.0/24), Private (10.0.2.0/24)
+Bastion          | Public subnet, connects via SSH
+DB Server        | Private subnet, accessed via Bastion
+NAT Gateway      | Provides internet access to Private Subnet
+MySQL            | Installed on Amazon Linux 2023 using Oracle's repo
+
+✅ Notes
+- Do not allow 0.0.0.0/0 for DB port 3306 unless required
+- Use WinSCP to transfer .pem file to Bastion if needed
+- Only Bastion should have public access; DB must stay private
