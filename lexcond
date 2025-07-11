@@ -1,0 +1,12 @@
+n Lex, you can write conditions using slot values and compare them using:
+
+is, is not
+
+equals, not equals (same as above)
+
+greater than, less than (for numbers or dates)
+
+contains (for lists or strings)
+
+is present, is not present (null checks)
+
