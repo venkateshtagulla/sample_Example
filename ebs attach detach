@@ -1,0 +1,81 @@
+Step 1: Gain root access
+sudo su
+
+Step 2: List available disks
+lsblk
+
+Step 3: View disk details
+fdisk -l
+
+Step 4: Open disk for partitioning
+fdisk /dev/xvdb
+
+Step 5: Inside fdisk
+m
+n
+p
+(press Enter)
+(press Enter)
+(press Enter)
+w
+
+Step 6: Refresh partition table
+partprobe
+
+Step 7: Check partition and filesystem
+lsblk -fs
+
+Step 8: Format the partition
+mkfs.xfs /dev/xvdb1
+
+Step 9: Verify formatting
+lsblk -fs
+
+Step 10: Create mount folder
+mkdir /mnt/csee589
+
+Step 11: Mount the partition
+mount /dev/xvdb1 /mnt/csee589
+
+Step 12: Verify mount
+lsblk -fs
+
+Step 13: Go to mount folder
+cd /mnt/csee589
+
+Step 14: Create test files
+touch files1 files2 files3 files4 files5 files6 files7 files8 files9 files10
+
+Step 15: Check files
+ls
+
+Step 16: Go back to root
+cd /
+
+Step 17: Make mount permanent
+vi /etc/fstab
+(add this line at the bottom)
+/dev/xvdb1 /mnt/csee589 xfs defaults 0 0
+(press Esc, then :wq, then Enter)
+
+Step 18: Verify again
+lsblk -fs
+
+Step 19: Go to mount folder again
+cd /mnt/csee589
+
+Step 20: Check files again
+ls
+
+Step 21: Go back to root
+cd /
+
+Step 22: Unmount the partition
+umount /mnt/csee589
+
+Step 23: Check if unmounted
+cd /mnt/csee589
+ls
+
+Final Step: Detach volume
+Go to AWS EC2 → Volumes → Select volume → Actions → Detach Volume
