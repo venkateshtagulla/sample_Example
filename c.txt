@@ -1,1 +1,29 @@
+aws ec2 create-key-pair --key-name my-key --query 'KeyMaterial' --output text > my-key.pem
+----------------------------------
+aws ec2 run-instances \
+--image-id ami-0c02fb55956c7d316 \
+--instance-type t2.micro \
+--key-name my-key \
+--security-groups default \
+--count 1
+-------------------------------
+
 aws ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId,State.Name]" --output table
+
+-----------------------------------------
+aws ec2 describe-instances --region us-east-1
+------------------------------------------
+aws configure
+-------------
+
+Access key
+
+Secret key
+
+Region (e.g., us-east-1)
+
+Output format (e.g., json)
+---------------------------------
+aws s3 mb s3://my-test-bucket-987
+
+aws s3 ls
