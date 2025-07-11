@@ -1,3 +1,6 @@
+aws ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId,State.Name]" --output table && aws s3 ls
+-------------------------------------------------------------------------------------------------------------------------
+
 aws ec2 create-key-pair --key-name my-key --query 'KeyMaterial' --output text > my-key.pem
 ----------------------------------
 aws ec2 run-instances \
