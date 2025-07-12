@@ -1,0 +1,8 @@
+#!/bin/bash
+sudo su
+yum update -y
+yum install httpd -y
+cd /var/www/html
+echo "22BD1A0587" > index.html
+service httpd start
+chkconfig httpd on
