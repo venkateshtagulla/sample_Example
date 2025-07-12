@@ -1,0 +1,77 @@
+✅ Experiment 4 – EBS Snapshot and Mounting Steps
+Switch to root user:
+sudo su
+
+Check disk list:
+lsblk
+
+Partition the new disk:
+fdisk /dev/xvdb
+
+(Inside fdisk, type these keys one by one and press Enter after each)
+n
+p
+1
+(Enter)
+(Enter)
+w
+
+Inform kernel:
+partprobe
+
+Format the partition:
+mkfs.xfs /dev/xvdb1
+
+Create mount folder:
+mkdir /mnt/ece589
+
+Mount the volume:
+mount /dev/xvdb1 /mnt/ece589
+
+Go into mount folder:
+cd /mnt/ece589
+
+Install git:
+yum update -y
+yum install git -y
+
+Check git version:
+git --version
+
+Clone the Maven Java project:
+git clone https://github.com/Arjun7304/MavenJavaProject.git
+
+Go inside project folder:
+cd MavenJava
+ls
+
+Edit fstab to make mount permanent:
+vi /etc/fstab
+
+(Inside file, press i and paste this line)
+/dev/xvdb1 /mnt/ece589 xfs defaults 0 0
+
+(Then press Esc → :wq → Enter to save)
+
+Create snapshot from AWS Console
+(Go to EC2 → Volumes → Create Snapshot)
+
+Copy snapshot to Oregon region
+(Go to Snapshots → Copy Snapshot → Select us-west-2)
+
+Switch to Oregon region
+(Verify snapshot copied)
+
+Create volume from snapshot in Oregon
+(Use same Availability Zone as new EC2 instance)
+
+Launch new EC2 instance in Oregon
+
+Attach volume as /dev/xvdb
+
+Login to new EC2 instance and run:
+sudo su
+mkdir /mnt/ece589
+mount /dev/xvdb1 /mnt/ece589
+cd /mnt/ece589
+ls
