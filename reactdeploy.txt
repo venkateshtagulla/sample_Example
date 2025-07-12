@@ -1,0 +1,89 @@
+9. Deploying a ReactJS application using Docker 
+�
+� Deploy React App with AWS and Docker 
+This document outlines the complete process of deploying a 
+ReactJS application using Docker on an AWS EC2 instance. It 
+includes step-by-step instructions, terminal commands, and file 
+structures used. 
+�
+� Project Directory Structure 
+reactdeploy/ 
+├── Dockerfile 
+├── package.json 
+├── package-lock.json 
+├── public/ 
+├── src/ 
+├── .dockerignore 
+�
+� Docker Configuration 
+Dockerfile 
+FROM node:18 AS build 
+WORKDIR /app 
+COPY package*.json ./ 
+RUN npm install 
+COPY . . 
+RUN chmod +x node_modules/.bin/react-scripts 
+RUN npm run build 
+FROM nginx:alpine 
+COPY --from=build /app/build /usr/share/nginx/html 
+EXPOSE 80 
+CMD ["nginx", "-g", "daemon off;"] 
+.dockerignore 
+node_modules 
+build 
+☁
+ ️ Launch EC2 Instance on AWS 
+ Go to AWS Console → EC2 → Launch Instance 
+ Name: React Docker 
+ OS: Amazon Linux 2 
+ Instance Type: t2.micro (Free Tier) 
+ Security Group: 
+o Allow SSH (port 22) 
+o Allow HTTP (port 80) 
+ Download PEM key (e.g., reactdeployerpem.pem) 
+�
+�
+ ️ Terminal Operations 
+�
+� Terminal 1: Connect to EC2 
+cd Downloads 
+ssh -i 
+"C:\Users\VENKATESH\Downloads\reactdeployerpem.pem" 
+ec2-user@ec2-35-173-178-7.compute-1.amazonaws.com 
+�
+� Terminal 2: Upload React Project ZIP 
+Before uploading, compress your project folder reactdeploy to 
+reactdeploy.zip. 
+scp -i 
+"C:\Users\VENKATESH\Downloads\reactdeployerpem.pem" 
+"C:\Users\VENKATESH\OneDrive\Desktop\reactdeploy.zip" ec2
+user@ec2-35-173-178-7.compute
+1.amazonaws.com:/home/ec2-user/ 
+�
+� Back in Terminal 1 
+1. Install Docker 
+sudo yum update -y 
+sudo yum install -y docker 
+2. Start Docker 
+sudo systemctl start docker 
+sudo systemctl enable docker 
+3. Allow Docker without sudo (optional) 
+sudo usermod -aG docker ec2-user 
+exit 
+Then reconnect: 
+ssh -i 
+"C:\Users\VENKATESH\Downloads\reactdeployerpem.pem" 
+ec2-user@ec2-35-173-178-7.compute-1.amazonaws.com 
+4. Unzip and enter project folder 
+unzip reactdeploy.zip 
+cd reactdeploy 
+ls 
+You should see Dockerfile, .dockerignore, and other app files. 
+5. Build Docker Image 
+docker build -t kmit-react-app . 
+6. Run Docker Container 
+docker run -d -p 80:80 kmit-react-app 
+�
+� Test in Browser 
+Open the following URL: 
+http://public ipv4 address of instance
