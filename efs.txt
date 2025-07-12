@@ -1,0 +1,13 @@
+sudo yum install -y nfs-utils
+
+sudo mkdir /mnt/efs
+
+sudo mount -t nfs4 -o nfsvers=4.1 fs-xxxxxxxx.efs.us-east-1.amazonaws.com:/ /mnt/efs
+
+cd /mnt/efs
+
+sudo yum install -y git
+
+git clone https://github.com/your-username/your-repo.git
+
+ls your-repo
